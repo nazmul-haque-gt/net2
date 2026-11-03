@@ -1,0 +1,24 @@
+name: Build NetSpeedTray
+on:
+  push:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Publish single exe
+        run: dotnet publish NetSpeedTray.csproj -c Release -o out
+      - name: Publish folder version (fallback)
+        run: dotnet publish NetSpeedTray.csproj -c Release -o out-folder -p:PublishSingleFile=false
+      - uses: actions/upload-artifact@v4
+        with:
+          name: NetSpeedTray
+          path: out/NetSpeedTray.exe
+      - uses: actions/upload-artifact@v4
+        with:
+          name: NetSpeedTray-folder
+          path: out-folder
